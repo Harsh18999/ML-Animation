@@ -1,0 +1,4 @@
+streamit==1.33.0
+plotly==5.20.0
+scikit-learn==1.5.1
+
