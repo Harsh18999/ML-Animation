@@ -48,18 +48,18 @@ class DBSCAN:
       Neighbor_Points, Point_Pos = self._assign_position(X,point)
       points.append(Point(point,Point_Pos,Neighbor_Points,1-Point_Pos))
       colors[i] = 1 -Point_Pos
-      frames.append(self._create_frame(X,colors,'Process - Selecting Core Points'))
+      frames.append(self._create_frame(X,colors,'Process - Selecting Core Points',i))
 
     for i in range(len(X)):
       if points[i].cluster == 0 :
         current_cluster += 1
         points[i].cluster = current_cluster
         colors[i] = current_cluster
-        frames.append(self._create_frame(X,colors,f'Process - Assign Cluster {current_cluster}'))
+        frames.append(self._create_frame(X,colors,f'Process - Assign Cluster {current_cluster}',i))
         self._find_cluster_points(X,current_cluster,points,i,colors,frames)
 
     self.plot_animation(frames,X)
-    return points
+    return 
 
   def _find_cluster_points(self,X, current_cluster, points, i,colors,frames):
 
@@ -69,32 +69,37 @@ class DBSCAN:
       expention_point = cluster_members[j]
       if points[expention_point].cluster == -1:
         colors[expention_point] = current_cluster
-        frames.append(self._create_frame(X,colors,f'Process - Assign Cluster {current_cluster}'))
+        frames.append(self._create_frame(X,colors,f'Process - Assign Cluster {current_cluster}',expention_point))
         points[expention_point].cluster = current_cluster
 
       elif points[expention_point].cluster == 0:
         colors[expention_point] = current_cluster
-        frames.append(self._create_frame(X,colors,f'Process - Assign Cluster {current_cluster}'))
+        frames.append(self._create_frame(X,colors,f'Process - Assign Cluster {current_cluster}',expention_point))
         points[expention_point].cluster = current_cluster
         cluster_members += points[expention_point].neighbor_points
       j += 1
 
-  def _create_frame(self,X,colors,process):
+  def _create_frame(self,X,colors,process,index):
     # Scatter plot for data points colored by cluster
     trace_data_points = go.Scatter(
         x=X[:, 0], y=X[:, 1],
         mode='markers',
-        marker=dict(color=colors, size=8, colorscale='Viridis', line=dict(width=0.2)),
+        marker=dict(color=colors, size=10, colorscale='Viridis', line=dict(width=0.2)),
         name=process
     )
-
+    trace_point = go.Scatter(
+            x= [X[index][0]], y= [X[index][1]],
+            mode='markers',
+            marker=dict(color='red', size=10, symbol='x', line=dict(width=0.2)),
+            name='Processing Point'
+        ) 
     # Return frame with current data points and centroids
-    return go.Frame(data=[trace_data_points], layout=go.Layout(title_text=process)) 
+    return go.Frame(data=[trace_data_points, trace_point], layout=go.Layout(title_text=process)) 
   
   def plot_animation(self, frames, X):
         # Create a figure for the animation
         fig = go.Figure(
-            data=[frames[0].data[0]],  # Initial data points and centroids
+            data=[frames[0].data[0], frames[0].data[1]],  # Initial data points and centroids
             layout=go.Layout(
                 title="DBSCAN Algorithm Animation",
                 xaxis=dict(range=[X[:, 0].min() - 1, X[:, 0].max() + 1]),
