@@ -48,14 +48,14 @@ class DBSCAN:
       Neighbor_Points, Point_Pos = self._assign_position(X,point)
       points.append(Point(point,Point_Pos,Neighbor_Points,1-Point_Pos))
       colors[i] = 1 -Point_Pos
-      frames.append(self._create_frame(X,colors,'Process - Selecting Core Points',i))
+      frames.append(self._create_frame(X,colors,'Selecting Core and Border Points',i))
 
     for i in range(len(X)):
       if points[i].cluster == 0 :
         current_cluster += 1
         points[i].cluster = current_cluster
         colors[i] = current_cluster
-        frames.append(self._create_frame(X,colors,f'Process - Assign Cluster {current_cluster}',i))
+        frames.append(self._create_frame(X,colors,f'Assign Cluster {current_cluster}',i))
         self._find_cluster_points(X,current_cluster,points,i,colors,frames)
 
     self.plot_animation(frames,X)
@@ -69,12 +69,12 @@ class DBSCAN:
       expention_point = cluster_members[j]
       if points[expention_point].cluster == -1:
         colors[expention_point] = current_cluster
-        frames.append(self._create_frame(X,colors,f'Process - Assign Cluster {current_cluster}',expention_point))
+        frames.append(self._create_frame(X,colors,f'Assign Cluster {current_cluster}',expention_point))
         points[expention_point].cluster = current_cluster
 
       elif points[expention_point].cluster == 0:
         colors[expention_point] = current_cluster
-        frames.append(self._create_frame(X,colors,f'Process - Assign Cluster {current_cluster}',expention_point))
+        frames.append(self._create_frame(X,colors,f'Assign Cluster {current_cluster}',expention_point))
         points[expention_point].cluster = current_cluster
         cluster_members += points[expention_point].neighbor_points
       j += 1
@@ -126,9 +126,8 @@ class DBSCAN:
         # Display the plot in Streamlit
         st.plotly_chart(fig)
 
-def Animation(n_samples,n_cluster,cluster_std):
+def DBSCAN_Animation(eps, min_points, n_samples, n_cluster, cluster_std):
   X, y = make_blobs(n_samples=n_samples, centers=n_cluster, n_features=2, random_state=42,cluster_std=cluster_std)
-  Model = DBSCAN(2,5)
+  Model = DBSCAN(eps=eps, min_points= min_points)
   Model.fit(X)
 
-Animation(100,3,2)

@@ -3,6 +3,7 @@ from LinearRegression import Linear_Regression
 from LogisticRegression import Plot_Model
 from K_NearestNeighbors import plot_knn_model
 from K_MeansClustering import plot_kmeans_model
+from DBSCAN import DBSCAN_Animation
 
 st.title(':red[ML Algorithm] :blue[Animations]')
 st.sidebar.title(':red[ML Algorithm] :blue[Animations]')
@@ -21,7 +22,7 @@ algorithms = []
 if Ml == 'Supervised':
     algorithms = ['Linear Regression', 'Logistic Regression', 'K-Nearest Neighbors']
 elif Ml == 'Un-Supervised':
-    algorithms = ['K-Means Clustering']
+    algorithms = ['K-Means Clustering', 'DBSCAN']
 
 Model = st.sidebar.selectbox('Select Machine Learning Algorithm:', options=algorithms)
 
@@ -62,5 +63,17 @@ elif Model =='K-Means Clustering':
 
     if st.sidebar.button('Show Animation'):
         plot_kmeans_model(n_samples=samples,n_cluster=n_clusters,iter=max_iter,cluster_std=cluster_std)
+
+elif Model == 'DBSCAN':
+    samples = st.sidebar.number_input('Enter Number of sample data points', value=100)
+    n_clusters = st.sidebar.number_input('Enter no of clusters',value=4,step=1)
+    cluster_std = st.sidebar.number_input('Enter cluster std',value=2)
+    eps = st.sidebar.number_input('Enter eps value', value=3)
+    min_point = st.sidebar.number_input('Enter value of min neighbor points',value=5)
+
+    if st.sidebar.button('Show Animation'):
+        DBSCAN_Animation(n_samples=samples, n_cluster=n_clusters, cluster_std=cluster_std, eps= eps, min_points= min_point)
+
+    
 
 
