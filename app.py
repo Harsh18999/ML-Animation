@@ -28,21 +28,21 @@ Model = st.sidebar.selectbox('Select Machine Learning Algorithm:', options=algor
 
 if Model == 'Linear Regression':
     samples = st.sidebar.number_input('Enter Number of sample data points', value=100)
-    noise = st.sidebar.number_input('Noise in data', value=15)
-    lr = st.sidebar.number_input('Enter Learning rate', value=0.1)
+    noise = st.sidebar.number_input('Noise in data', value=50)
+    lr = st.sidebar.number_input('Enter Learning rate', value=0.03)
     max_iter = st.sidebar.number_input('Enter number of iterations', value=100, step=1)
 
-    if st.sidebar.button('Show'):
+    if st.sidebar.button('Show Animation'):
         Linear_Regression(learning_rate=lr, noise=noise, no_of_iterations=max_iter, samples=samples)
 
 
 elif Model == 'Logistic Regression':
     samples = st.sidebar.number_input('Enter Number of sample data points', value=100)
     sep = st.sidebar.number_input('Separation between classes', value=5)
-    lr = st.sidebar.number_input('Enter Learning rate', value=0.1)
+    lr = st.sidebar.number_input('Enter Learning rate', value=0.03)
     max_iter = st.sidebar.number_input('Enter number of iterations', value=100, step=1)
 
-    if st.sidebar.button('Show'):
+    if st.sidebar.button('Show Animation'):
         Plot_Model(n_samples=samples, sep=sep, lr=lr, iter=max_iter)
 
 elif Model == 'K-Nearest Neighbors':
@@ -52,7 +52,7 @@ elif Model == 'K-Nearest Neighbors':
     k = st.sidebar.number_input('Enter value', value=5, step=1)
     max_iter = st.sidebar.number_input('Enter number of iterations', value=100, step=1)
 
-    if st.sidebar.button('Show'):
+    if st.sidebar.button('Show Animation'):
         plot_knn_model(n_samples=samples, sep=sep,k=k,no_classes=no_classes)
 
 elif Model =='K-Means Clustering':

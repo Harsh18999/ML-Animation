@@ -3,41 +3,29 @@ import plotly.graph_objects as go
 import streamlit as st
 from sklearn.datasets import make_classification
 from scipy.spatial import distance
+from collections import Counter
 
-class KNearestNighbors:
+def euclidean_distance(x1, x2):
+    distance = np.sqrt(np.sum((x1-x2)**2))
+    return distance
 
-  def __init__(self,distance_matrix,n_neighbors):
-    self.distance_matrix = distance_matrix
-    self.n_neighbors = n_neighbors
+class KNN:
+    def __init__(self, k=3):
+        self.k = k
 
-  def get_distance_matrix(self,x_train,test_point):
-    dis = 0
+    def fit(self, X, y):
+        self.X_train = X
+        self.y_train = y
 
-    if self.distance_matrix == 'euclidian':
-      for i in range(len(x_train)-1):
-        dis += (x_train[i] - test_point[i])**2
-      euclidian_distance = np.sqrt(dis)
-      return euclidian_distance
-    
-    elif self.distance_matrix == 'manhattan':
-      for i in range(len(x_train)-1):
-        dis += abs(x_train[i]-test_point[i])
-      return dis
-    
-    else: raise NameError
+    def _predict(self, x):
+        # compute the distance
+        distances = [euclidean_distance(x, x_train) for x_train in self.X_train]
 
-  def Predict(self,x_train,test_point):
+        # get the closest k
+        k_indices = np.argsort(distances)[:self.k]
+        k_nearest_labels = [self.X_train[i] for i in k_indices]
 
-    distance_list = []
-
-    for training_data in x_train:
-      distance = self.get_distance_matrix(training_data,test_point)
-      distance_list.append([training_data,distance])
-
-    distance_list.sort(key=lambda x:x[1])
-    nearest_nighbors = [distance_list[x][0] for x in range(self.n_neighbors)]
-    
-    return nearest_nighbors
+        return k_nearest_labels
 
 # Function to plot KNN animation
 def animate_knn(X, y, new_point, k_max):
@@ -50,8 +38,11 @@ def animate_knn(X, y, new_point, k_max):
     # Iterate over k from 1 to k_max to create animation frames
     for k in range(1, k_max + 1):
         # Get the prediction at each step for the new point
-        neighbors = KNearestNighbors('manhattan',k).Predict(X,new_point)
-  
+        Model = KNN(k)
+        Model.fit(X, y)
+        
+        neighbors = Model._predict(new_point) 
+      
         # Create frame showing the current nearest neighbors and decision
         trace_neighbors = go.Scatter(x=X[:, 0], y=X[:, 1], mode='markers', marker=dict(color=y,colorscale = ['blue','orange']), name='Data Points') 
         
@@ -121,7 +112,7 @@ def animate_knn(X, y, new_point, k_max):
 # Function to generate data and run KNN animation
 def plot_knn_model(n_samples,sep,k,no_classes):
     # Generate synthetic dataset
-    X, y = make_classification(n_samples=n_samples, n_features=2, n_classes=2, n_informative=2, n_redundant=0, 
+    X, y = make_classification(n_samples=n_samples, n_features=no_classes, n_classes=no_classes, n_informative=no_classes, n_redundant=0, 
                                n_clusters_per_class=1, hypercube=False, random_state=41, class_sep=sep)
     
     # New point to classify
