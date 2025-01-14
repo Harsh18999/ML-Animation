@@ -20,7 +20,7 @@ class Linear_Regression():
         self.m, self.n = X.shape  # number of rows & columns
 
         # initiating the weight and bias
-        self.w = np.zeros(self.n)
+        self.w = np.ones(self.n)
         self.b = 0
         self.X = X
         self.Y = Y
